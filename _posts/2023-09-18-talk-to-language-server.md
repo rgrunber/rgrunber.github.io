@@ -15,7 +15,7 @@ I wanted to challenge myself to come up with an example that is short and easy t
 CLIENT_HOST=127.0.0.1 CLIENT_PORT=5036 ./org.eclipse.jdt.ls.product/target/repository/bin/jdtls --jvm-arg=-Dsocket.stream.debug=true --jvm-arg=-Dosgi.dev
 ```
 
-So what does this do ? It starts the language server and has it listening on port `5036` of the location interface for connections. The additional JVM arguments (`socket.stream.debug=true`, `osgi.dev`) ensure language server will be listening for connections.
+So what does this do ? It starts the language server and has it listening on port `5036` of the local interface for connections. The additional JVM arguments (`socket.stream.debug=true`, `osgi.dev`) ensure language server will be listening for connections.
 
 You might wonder, *"Why have such a complicated way for the language server do something so basic ?"*. If not, skip this paragraph. Basically, most clients will have started before the language server, so it's often easier for the clients to start as a "server" and have the language server initiate the connection with the client. In other words, the client is the "server" and the server is the "client". It's a bit counter-intuitive to speak of a client/server with the roles reversed in the context of connection establishment, so for this example we just pass some extra arguments to make it more intuitive. The language server supports establishing a connection both ways though.
 
@@ -73,6 +73,8 @@ java.lang.IllegalStateException: Missing header Content-Length in input "
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
 	at java.base/java.lang.Thread.run(Thread.java:833)
 ```
+
+**Update 2024-06-11:** You can avoid all of this null termination business simply by running `stty -icanon` (disable canonical input mode) in your terminal. This also has the added benefit of removing buffered input, which can affect commands like `didOpen` that send entire files over.
 
 So putting all of this together, here is the full interaction from the client-side :
 
