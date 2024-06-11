@@ -74,6 +74,8 @@ java.lang.IllegalStateException: Missing header Content-Length in input "
 	at java.base/java.lang.Thread.run(Thread.java:833)
 ```
 
+**Update 2024-06-11:** You can avoid all of this null termination business simply by running `stty -icanon` (disable canonical input mode) in your terminal. This also has the added benefit of removing buffered input, which can affect commands like `didOpen` that send entire files over.
+
 So putting all of this together, here is the full interaction from the client-side :
 
 ```bash
